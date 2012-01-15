@@ -10,6 +10,16 @@ exports.index = function(req, res) {
     };
 
     require('http').get(options, function(response) {
-        res.render('index', { title: 'Express' });
+        var body="";
+
+        response.on('data', function(chunk) {
+            body += chunk;
+        });
+
+        response.on('end', function() {
+            res.render('index', {
+                layout: false
+            });
+        });
     });
 };
