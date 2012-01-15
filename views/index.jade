@@ -1,0 +1,19 @@
+!!! 5
+html
+  head(lang="en")
+    title Stock Ticker
+    script(type="text/javascript", src="/javascripts/jquery-1.7.1.js")
+    script(type="text/javascript", src="/javascripts/jquery.webticker.js")
+    script(type='text/javascript')
+      $(function() {
+        $("#webTicker").webTicker();
+      });
+    link(rel="stylesheet",type="text/css",href="/stylesheets/webticker.css")
+    body
+      ul#webTicker
+        li Some
+        li Say
+        li Sexor
+        li Was
+        li A
+        li Man
