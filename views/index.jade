@@ -11,9 +11,5 @@ html
     link(rel="stylesheet",type="text/css",href="/stylesheets/webticker.css")
     body
       ul#webTicker
-        li Some
-        li Say
-        li Sexor
-        li Was
-        li A
-        li Man
+        each value, symbol in payload
+          li #{symbol}: $#{value}
