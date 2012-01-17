@@ -3,29 +3,34 @@ html
   head(lang="en")
     title Stock Ticker!!!
     script(type="text/javascript", src="/javascripts/jquery-1.7.1.js")
-    script(type="text/javascript", src="/javascripts/jquery.webticker.js")
-    script(type="text/javascript")
-      $(function() {
-        //$("#webTicker").webTicker();
-      });
-    link(rel="stylesheet",type="text/css",href="/stylesheets/webticker.css")
+    script(type="text/javascript", src="/javascripts/jquery.li-scroller.1.0.js")
+    link(rel="stylesheet",type="text/css",href="/stylesheets/li-scroller.css")
     script(type='text/javascript', src="/socket.io/socket.io.js")
     script(type='text/javascript')
       var socket = io.connect();
 
-      socket.on('stock_update', function(data) {
+      socket.on('stock_init', function(data) {
         var ticker = $("#webTicker");
-        //ticker.webTicker('stop');
-        $("#webTicker > li").remove();
+
         for(symbol in data) {
-          ticker.prepend("<li>" + symbol + ": " + data[symbol] + "</li>");
+          ticker.prepend("<li id=stock_" + symbol + "><span>" + symbol + "</span><a href=#>" + data[symbol] + "</a></li>");
         }
-        //ticker.webTicker('cont');
+
+        $(function() {
+          ticker.liScroll();
+        });
+      });
+
+      socket.on('stock_update', function(data) {
+        for(symbol in data) {
+          var stock_val = $("li#stock_" + symbol + " > a");
+          stock_val.text(data[symbol]);
+        }
       });
 
       setInterval(function() {
         socket.emit('request_stock_update');
       }, 60000);
-      socket.emit('request_stock_update');
+      socket.emit('request_stock_init');
     body
       ul#webTicker
