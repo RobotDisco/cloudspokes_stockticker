@@ -3,7 +3,7 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
+  , routes = require('./routes');
 
 var app = module.exports = express.createServer();
 var io = require('socket.io').listen(app);
@@ -30,7 +30,7 @@ app.configure('production', function(){
 // Update stock info (every five minutes)
 var options = {
     hostname: 'download.finance.yahoo.com',
-    path: '/d/quotes.csv?s=GOOG+NFLX+BCSI+EA+ZNGA&f=sl1'
+    path: '/d/quotes.csv?s=GOOG+NFLX+BCSI+EA+ZNGA+APPL+APP+CRM+TLM.TO+DCM&f=sl1'
 };
 
 var stock_data = {};
@@ -49,11 +49,10 @@ new cron.CronJob('0 */1 * * * *', function() {
             var payload = csv().from(body, { columns: false });
 
             payload.on('data', function(data, index) {
-                stock_data[data[0]] = data[1];
+                stock_data[data[0]] = '$' + data[1];
             });
 
             payload.on('end', function() {
-            // TODO update clients here?
                 console.log("Stock Data updated");
             });
         });
@@ -65,7 +64,11 @@ new cron.CronJob('0 */1 * * * *', function() {
 io.sockets.on('connection', function(socket) {
     socket.on('request_stock_update', function(data) {
         console.log("Stock update requested");
-        socket.emit('stock_update', stock_data);
+        socket.emit('stock_update', { stocks: stock_data, timestamp: Date() });
+    });
+    socket.on('request_stock_init', function(data) {
+        console.log("Stock init requested");
+        socket.emit('stock_init', { stocks: stock_data, timestamp: Date() });
     });
 });
 
