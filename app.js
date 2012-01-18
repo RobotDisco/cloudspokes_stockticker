@@ -72,6 +72,10 @@ io.sockets.on('connection', function(socket) {
         console.log("Stock init requested");
         socket.emit('stock_init', { stocks: stock_data, timestamp: Date() });
     });
+    socket.on('request_stock_init', function(data) {
+        console.log("Stock init requested");
+        socket.emit('stock_init', stock_data);
+    });
 });
 
 // Routes
