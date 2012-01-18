@@ -29,11 +29,13 @@ app.configure('production', function(){
 
 // Update stock info (every five minutes)
 var options = {
-    hostname: 'download.finance.yahoo.com',
-    path: '/d/quotes.csv?s=GOOG+NFLX+BCSI+EA+ZNGA+APPL+APP+CRM+TLM.TO+DCM&f=sl1'
+    host: 'download.finance.yahoo.com',
+    path: '/d/quotes.csv?s=GOOG+NFLX+BCSI+EA+ZNGA+APPL+APP+CRM+TLM.TO+DCM&f=sl1',
+    port: 80
 };
 
 var stock_data = {};
+
 
 var cron = require('cron2');
 new cron.CronJob('0 */1 * * * *', function() {
