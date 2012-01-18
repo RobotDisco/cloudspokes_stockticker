@@ -1,45 +1,37 @@
-/**
- * Module dependencies.
+// Configuration variables
+
+/* List of stock symbols we want to track.
+ * Change them as desired. There is no
+ * validation done to ensure that the stock
+ * is valid or tracked by Yahoo Finance
  */
-
-var express = require('express')
-  , routes = require('./routes');
-
-var app = module.exports = express.createServer();
-var io = require('socket.io').listen(app);
-
-// Configuration
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler()); 
-});
-
-// Update stock info (every five minutes)
-var options = {
-    host: 'download.finance.yahoo.com',
-    path: '/d/quotes.csv?s=GOOG+NFLX+BCSI+EA+ZNGA+APPL+APP+CRM+TLM.TO+DCM&f=sl1',
-    port: 80
-};
-
-var stock_data = {};
+var stock_symbols = [
+    "GOOG",
+    "NFLX",
+    "BCSI",
+    "EA",
+    "ZNGA",
+    "AAPL",
+    "APP",
+    "CRM",
+    "TLM.TO",
+    "DCM"
+];
+// Desired update interval for stock data, in minutes
+var UPDATE_INTERVAL=5;
 
 
-var cron = require('cron2');
-new cron.CronJob('0 */1 * * * *', function() {
-    require('http').get(options, function(response) {
+// Server logic follows
+var stock_data = {}; // holds our rolling stock information.
+
+var refresh_stock_data = function() {
+    var request_options = {
+        host: 'download.finance.yahoo.com',
+        path: '/d/quotes.csv?s=' + stock_symbols.join('+') + '&f=sl1',
+        port: 80
+    };
+
+    require('http').get(request_options, function(response) {
         var body="";
 
         response.on('data', function(chunk) {
@@ -59,10 +51,46 @@ new cron.CronJob('0 */1 * * * *', function() {
             });
         });
     });
+};
+
+
+// Set up express and socket.io framework
+var express = require('express')
+  , routes = require('./routes');
+
+var app = module.exports = express.createServer();
+var io = require('socket.io').listen(app);
+
+
+// Express Configuration profiles
+app.configure(function(){
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  app.use(express.static(__dirname + '/public'));
 });
 
-// Socket.io
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+});
 
+app.configure('production', function(){
+  app.use(express.errorHandler()); 
+});
+
+
+// Routes
+app.get('/', routes.index);
+
+
+// We should update stock info periodically
+var cron = require('cron2');
+new cron.CronJob('0 */' + UPDATE_INTERVAL + ' * * * *', refresh_stock_data);
+
+
+// Websocket logic
 io.sockets.on('connection', function(socket) {
     socket.on('request_stock_update', function(data) {
         console.log("Stock update requested");
@@ -74,9 +102,10 @@ io.sockets.on('connection', function(socket) {
     });
 });
 
-// Routes
 
-app.get('/', routes.index);
+// Prime stock data before accepting requests
+refresh_stock_data();
+
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
