@@ -1,1 +1,18 @@
-This file was created by JetBrains WebStorm 2.1.5 for binding GitHub repository
+This is my entry for the CloudSpokes "Node.js Stock Ticker" challenge.
+
+It is my first Node.JS app and first "web-app", if it can be called even that.
+Please accept my apologies for the code seeming more C-influenced in style and flow than it ought to be.
+
+My source for stock data is Yahoo! Finance. I don't fully understand financial lingo, but I tried to pull the data that I feel most people expect when looking in a (near) real-time stock ticker.
+
+To run this webticker:
+1) Get code from repository.
+2) Install Node 0.4.12 (which is what I ran and tested against)
+3) Install NPM (http://www.npmjs.org)
+4) Run "npm install" in the project directory.
+5) Optionally, modified list of stocks and update interval at top of app.js
+6) Run "node app.js" or deploy as desired.
+
+Caveats: There is no testing, at all, in this project. Since I am not that familiar with Node and client-side Javascript, I could not figure out how to set up appropriate tests. Even worse, I had no idea how to structure my code such that it can be wrapped in a test harness.
+
+As a great believer in GitHub, this code lives in http://github.com/NaleagDeco/cloudspokes_webticker
