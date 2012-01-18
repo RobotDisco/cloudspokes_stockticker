@@ -5,6 +5,8 @@ Please accept my apologies for the code seeming more C-influenced in style and f
 
 My source for stock data is Yahoo! Finance. I don't fully understand financial lingo, but I tried to pull the data that I feel most people expect when looking in a (near) real-time stock ticker.
 
+In order to handle seamless refreshing of data, I cache stock updates on the server and use websockets to communicate changes to the browswer.
+
 To run this webticker:
 1) Get code from repository.
 2) Install Node 0.4.12 (which is what I ran and tested against)
