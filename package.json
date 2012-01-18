@@ -1,9 +1,17 @@
 {
-    "name": "application-name"
+    "name": "cloudspokes-stockticker"
+  , "description": "A stockticker website for a Cloudspoke challenge"
+  , "author": "Gaelan D'costa <gdcosta@gmail.com>"
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": "2.5.5"
-    , "jade": ">= 0.0.1"
+      "express": "2.5.x"
+    , "jade": "0.20.x"
+    , "cron2": "0.1.x"
+    , "socket.io": "0.8.x"
+    , "csv": "0.0.x"
+  }
+  , "engine": {
+      "node": "0.4.x"
   }
 }
