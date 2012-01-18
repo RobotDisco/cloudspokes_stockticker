@@ -120,6 +120,19 @@ io.sockets.on('connection', function(socket) {
     });
 });
 
+/* CloudFoundry doesn't support WebSocket :'(
+ * We'll use the alternatives.
+ */
+if(process.env.VMC_APP_PORT) {
+    io.set('transports', [
+        //'websocket',
+        'flashsocket',
+        'htmlfile',
+        'xhr-polling',
+        'jsonp-polling'
+    ]);
+}
+
 
 // Prime stock data before accepting requests
 refresh_stock_data();
