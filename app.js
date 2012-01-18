@@ -27,8 +27,11 @@ var stock_data = {}; // holds our rolling stock information.
 var refresh_stock_data = function() {
     var request_options = {
         host: 'download.finance.yahoo.com',
-        path: '/d/quotes.csv?s=' + stock_symbols.join('+') + '&f=sl1',
-        port: 80
+        port: 80,
+        /* To understand the Yahoo Finance query scheme, see
+         * http://www.gummy-stuff.org/Yahoo-data.htm
+         */
+        path: '/d/quotes.csv?s=' + stock_symbols.join('+') + '&f=sl1c1'
     };
 
     require('http').get(request_options, function(response) {
@@ -43,7 +46,7 @@ var refresh_stock_data = function() {
             var payload = csv().from(body, { columns: false });
 
             payload.on('data', function(data, index) {
-                stock_data[data[0]] = '$' + data[1];
+                stock_data[data[0]] = '$' + data[1] + " " + data[2];
             });
 
             payload.on('end', function() {
