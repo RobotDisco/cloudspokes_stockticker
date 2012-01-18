@@ -43,10 +43,10 @@ var refresh_stock_data = function() {
 
         response.on('end', function() {
             var csv = require('csv');
-            var payload = csv().from(body, { columns: false });
+            var payload = csv().from(body, { columns: ["symbol", "last_trade_val", "val_change"] });
 
             payload.on('data', function(data, index) {
-                stock_data[data[0]] = '$' + data[1] + " " + data[2];
+                stock_data[data.symbol] = '$' + data.last_trade_val + " " + data.val_change;
             });
 
             payload.on('end', function() {
