@@ -29,6 +29,12 @@ var stock_symbols = [
 // Desired update interval for stock data, in minutes
 var UPDATE_INTERVAL=5;
 
+/* Port that this application server will listen to for HTTP requests.
+ *
+ * Please ignore the CloudFoundry PaaS override, or add necessary support
+ * for other application hosting providers!
+ */
+var LISTEN_PORT = (process.env.VCAP_APP_PORT || 3000);
 
 // Server logic follows
 var stock_data = {}; // holds our rolling stock information.
@@ -119,5 +125,5 @@ io.sockets.on('connection', function(socket) {
 refresh_stock_data();
 
 
-app.listen(3000);
+app.listen(LISTEN_PORT);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
