@@ -102,7 +102,7 @@ var cron = require('cron2');
 new cron.CronJob('0 */' + UPDATE_INTERVAL + ' * * * *', refresh_stock_data);
 
 
-// Websocket logic
+// Websocket logic, to handle client-side updates.
 io.sockets.on('connection', function(socket) {
     socket.on('request_stock_update', function(data) {
         console.log("Stock update requested");
